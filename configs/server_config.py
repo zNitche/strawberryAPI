@@ -4,6 +4,9 @@ class ServerConfig:
     WIFI_CONNECTION_RETRIES = 5
     WIFI_CONNECTION_DELAY = 5
 
+    HOTSPOT_NAME = "pico_hotspot"
+    HOTSPOT_PASSWORD = "pico_hotspot1234"
+
     SERVER_PORT = 80
 
     MAX_CONNECTION_PAYLOAD_LENGTH = 1024

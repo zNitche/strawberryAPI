@@ -26,7 +26,14 @@ class Server:
         self.wlan.active(True)
 
     def setup_wlan_as_host(self):
-        pass
+        self.print_debug(f"setting up server as host...")
+
+        self.wlan = network.WLAN(network.AP_IF)
+        self.wlan.config(essid=ServerConfig.HOTSPOT_NAME, password=ServerConfig.HOTSPOT_PASSWORD)
+
+        self.wlan.active(True)
+
+        self.print_debug(f"WLAN config: {self.wlan.ifconfig()}")
 
     def connect_to_network(self):
         tries = 0
@@ -68,7 +75,9 @@ class Server:
         self.mainloop()
 
     def run_as_host(self):
-        pass
+        self.setup_wlan_as_host()
+        self.bind_socket()
+        self.mainloop()
 
     def mainloop(self):
         self.print_debug("starting mainloop...")
