@@ -1,12 +1,14 @@
 import network
 import socket
+import sys
 import time
 from configs.server_config import ServerConfig
 from eagle.utils import machine_utils
+from eagle.communication.request import Request
 
 
 class Server:
-    def __init__(self, debug_mode=False):
+    def __init__(self, debug_mode=ServerConfig.DEBUG_MODE):
         self.wlan = None
 
         self.socket = None
@@ -93,12 +95,20 @@ class Server:
                     connection, address = self.socket.accept()
                     self.print_debug(f"connection from: {address}")
 
-                    request = connection.recv(ServerConfig.MAX_CONNECTION_PAYLOAD_LENGTH)
+                    request_string = (connection.recv(ServerConfig.MAX_CONNECTION_PAYLOAD_LENGTH)).decode("utf-8")
 
-                    self.print_debug(f"request from {address}: {request}")
+                    self.print_debug(f"request string from {address}: {request_string}")
+
+                    request = Request(request_string)
+                    request.create()
+
+                    self.print_debug(f"request from {address}: {request.header}")
 
                 except Exception as e:
                     self.print_debug(f"error occurred: {str(e)}")
+
+                    if self.debug_mode:
+                        sys.print_exception(e)
 
                 finally:
                     if connection is not None:

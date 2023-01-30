@@ -2,7 +2,7 @@ from eagle.controllers.server import Server
 
 
 def main():
-    server = Server(debug_mode=True)
+    server = Server()
 
     # server.run_as_host()
     server.run_as_client()

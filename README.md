@@ -1,6 +1,6 @@
 ### Raven
 
-a lightweight MicroPython web framework for RaspberryPi Pico W
+a lightweight MicroPython web framework / server for RaspberryPi Pico W
 
 ---
 
