@@ -1,4 +1,5 @@
 from eagle.controllers.server import Server
+from eagle.controllers.app import App
 
 
 def main():
@@ -6,6 +7,9 @@ def main():
 
     # server.run_as_host()
     server.run_as_client()
+
+    app = App(server.mainloop)
+    app.run()
 
 
 if __name__ == '__main__':

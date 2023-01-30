@@ -74,12 +74,10 @@ class Server:
         self.setup_wlan_as_client()
         self.connect_to_network()
         self.bind_socket()
-        self.mainloop()
 
     def run_as_host(self):
         self.setup_wlan_as_host()
         self.bind_socket()
-        self.mainloop()
 
     def mainloop(self):
         self.print_debug("starting mainloop...")
