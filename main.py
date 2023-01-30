@@ -1,5 +1,9 @@
+from eagle.controllers.server import Server
+
+
 def main():
-    print("Hello Pico")
+    server = Server(debug_mode=True)
+    server.run_as_client()
 
 
 if __name__ == '__main__':
