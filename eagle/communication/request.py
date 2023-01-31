@@ -2,17 +2,12 @@ from eagle.consts import RequestsConsts
 
 
 class Request:
-    def __init__(self, request_string):
-        self.request_string = request_string
-
+    def __init__(self):
         self.header = {}
         self.body = {}
 
-    def create(self):
-        self.parse_header()
-
-    def parse_header(self):
-        rs = self.request_string.replace("\r", "").split("\n")
+    def parse_header(self, header_string):
+        rs = header_string.replace("\r", "").split("\n")
 
         if len(rs) > 0:
             method, target, protocol = rs[0].split()
@@ -28,3 +23,7 @@ class Request:
 
                 if len(row) == 2:
                     self.header[row[0].upper()] = row[1].strip()
+
+    def parse_body(self, body_string):
+        #TODO
+        self.body = {"value": body_string}

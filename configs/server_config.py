@@ -10,5 +10,4 @@ class ServerConfig:
     SERVER_PORT = 80
     DEBUG_MODE = True
 
-    MAX_CONNECTION_PAYLOAD_LENGTH = 1024
-    MAINLOOP_DELAY = 0.1
+    HOTSPOT_MODE = False

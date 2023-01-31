@@ -1,20 +1,24 @@
 import network
-import socket
 import sys
 import time
+import uasyncio
 from configs.server_config import ServerConfig
 from eagle.utils import machine_utils
 from eagle.communication.request import Request
+from eagle.consts import RequestsConsts
 
 
 class Server:
     def __init__(self, debug_mode=ServerConfig.DEBUG_MODE):
         self.wlan = None
 
-        self.socket = None
+        self.app = None
 
         self.debug_mode = debug_mode
-        self.is_running = False
+        self.mainloop = uasyncio.get_event_loop()
+
+    def set_app(self, app):
+        self.app = app
 
     def print_debug(self, message):
         if self.debug_mode:
@@ -57,59 +61,68 @@ class Server:
 
             machine_utils.blink_onboard_led(blinks=3)
 
-    def get_socket_address(self):
-        return socket.getaddrinfo("0.0.0.0", ServerConfig.SERVER_PORT)[0][-1]
-
-    def bind_socket(self):
-        self.print_debug("binding socket...")
-
-        self.socket = socket.socket()
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(self.get_socket_address())
-        self.socket.listen(1)
-
-        self.print_debug("socket bound...")
-
     def run_as_client(self):
         self.setup_wlan_as_client()
         self.connect_to_network()
-        self.bind_socket()
 
     def run_as_host(self):
         self.setup_wlan_as_host()
-        self.bind_socket()
 
-    def mainloop(self):
+    async def load_request(self, request_stream):
+        request_header_string = ""
+
+        while True:
+            request_line = await request_stream.readline()
+            request_line = request_line.decode()
+
+            # header end
+            if request_line == "\r\n":
+                break
+
+            request_header_string += request_line
+
+        request = Request()
+        request.parse_header(request_header_string)
+
+        content_length = int(request.header.get(RequestsConsts.CONTENT_LENGTH))
+        request_body_string = await request_stream.readexactly(content_length)
+
+        request.parse_body(request_body_string)
+
+        return request
+
+    async def requests_handler(self, client_r, client_w):
+        try:
+            client_address = client_w.get_extra_info("peername")
+
+            request = await self.load_request(client_r)
+            self.print_debug(f"connection from: {client_address}")
+
+            response = await self.app.requests_handler(client_address, request)
+
+            if response:
+                client_w.write(response)
+
+        except Exception as e:
+            self.print_debug(f"error occurred: {str(e)}")
+
+            if self.debug_mode:
+                sys.print_exception(e)
+
+        finally:
+            client_w.close()
+
+            await client_w.wait_closed()
+
+    def run_mainloop(self):
         self.print_debug("starting mainloop...")
-        self.is_running = True
 
-        if self.wlan is not None and self.socket is not None:
+        if self.wlan is not None:
+            self.mainloop.create_task(uasyncio.start_server(self.requests_handler, "0.0.0.0", ServerConfig.SERVER_PORT))
+
             self.print_debug("mainloop running...")
+            self.mainloop.run_forever()
 
-            while self.wlan.isconnected() and self.is_running:
-                connection = None
-
-                try:
-                    connection, address = self.socket.accept()
-                    self.print_debug(f"connection from: {address}")
-
-                    request_string = (connection.recv(ServerConfig.MAX_CONNECTION_PAYLOAD_LENGTH)).decode("utf-8")
-
-                    self.print_debug(f"request string from {address}: {request_string}")
-
-                    request = Request(request_string)
-                    request.create()
-
-                    self.print_debug(f"request from {address}: {request.header}")
-
-                except Exception as e:
-                    self.print_debug(f"error occurred: {str(e)}")
-
-                    if self.debug_mode:
-                        sys.print_exception(e)
-
-                finally:
-                    if connection is not None:
-                        connection.close()
-
-                time.sleep(ServerConfig.MAINLOOP_DELAY)
+    def stop(self):
+        self.mainloop.stop()
+        self.mainloop.close()
