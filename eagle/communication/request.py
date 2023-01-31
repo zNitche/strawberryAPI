@@ -8,23 +8,29 @@ class Request:
         self.body = {}
 
     def parse_header(self, header_string):
-        rs = header_string.replace("\r", "").split("\n")
+        splitted_request_string = self.split_request_string(header_string)
 
-        if len(rs) > 0:
-            method, target, protocol = rs[0].split()
+        if len(splitted_request_string) > 0:
+            self.method, self.target, self.protocol = splitted_request_string[0].split()
+            splitted_request_string.pop(0)
 
-            self.protocol = protocol
-            self.target = target
-            self.method = method
+            self.header = self.parse_request_string(splitted_request_string)
 
-            rs.pop(0)
+    def parse_body(self, body_string):
+        splitted_request_string = self.split_request_string(body_string)
+        self.body = self.parse_request_string(splitted_request_string)
 
-            for raw_row in rs:
+    def parse_request_string(self, splitted_request_string):
+        request_struct = {}
+
+        if len(splitted_request_string) > 0:
+            for raw_row in splitted_request_string:
                 row = raw_row.split(":")
 
                 if len(row) == 2:
-                    self.header[row[0].upper()] = row[1].strip()
+                    request_struct[row[0].upper()] = row[1].strip()
 
-    def parse_body(self, body_string):
-        #TODO
-        self.body = {"value": body_string}
+        return request_struct
+
+    def split_request_string(self, string):
+        return string.replace("\r", "").split("\n")

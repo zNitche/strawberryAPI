@@ -92,7 +92,7 @@ class Server:
         content_length = int(request.header.get(RequestsConsts.CONTENT_LENGTH))
         request_body_string = await request_stream.readexactly(content_length)
 
-        request.parse_body(request_body_string)
+        request.parse_body(request_body_string.decode())
 
         return request
 
