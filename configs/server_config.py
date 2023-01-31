@@ -7,6 +7,7 @@ class ServerConfig:
     HOTSPOT_NAME = "pico_hotspot"
     HOTSPOT_PASSWORD = "pico_hotspot1234"
 
+    SERVER_HOST = "0.0.0.0"
     SERVER_PORT = 80
     DEBUG_MODE = True
 

@@ -1,8 +1,9 @@
-from eagle.consts import RequestsConsts
-
-
 class Request:
     def __init__(self):
+        self.protocol = None
+        self.target = None
+        self.method = None
+
         self.header = {}
         self.body = {}
 
@@ -12,9 +13,9 @@ class Request:
         if len(rs) > 0:
             method, target, protocol = rs[0].split()
 
-            self.header[RequestsConsts.PROTOCOL_KEY] = protocol
-            self.header[RequestsConsts.TARGET_KEY] = target
-            self.header[RequestsConsts.METHOD_KEY] = method
+            self.protocol = protocol
+            self.target = target
+            self.method = method
 
             rs.pop(0)
 

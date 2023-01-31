@@ -9,7 +9,12 @@ from eagle.consts import RequestsConsts
 
 
 class Server:
-    def __init__(self, debug_mode=ServerConfig.DEBUG_MODE):
+    def __init__(self, debug_mode=ServerConfig.DEBUG_MODE,
+                 host=ServerConfig.SERVER_HOST,
+                 port=ServerConfig.SERVER_PORT):
+        self.host = host
+        self.port = port
+
         self.wlan = None
 
         self.app = None
@@ -118,7 +123,7 @@ class Server:
         self.print_debug("starting mainloop...")
 
         if self.wlan is not None:
-            self.mainloop.create_task(uasyncio.start_server(self.requests_handler, "0.0.0.0", ServerConfig.SERVER_PORT))
+            self.mainloop.create_task(uasyncio.start_server(self.requests_handler, self.host, self.port))
 
             self.print_debug("mainloop running...")
             self.mainloop.run_forever()
