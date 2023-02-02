@@ -5,7 +5,7 @@ import uasyncio
 from configs.server_config import ServerConfig
 from eagle.utils import machine_utils
 from eagle.communication.request import Request
-from eagle.consts import RequestsConsts
+from eagle.consts import HTTPConsts
 
 
 class Server:
@@ -89,10 +89,12 @@ class Server:
         request = Request()
         request.parse_header(request_header_string)
 
-        content_length = int(request.header.get(RequestsConsts.CONTENT_LENGTH))
-        request_body_string = await request_stream.readexactly(content_length)
+        content_length = request.header.get(HTTPConsts.CONTENT_LENGTH)
 
-        request.parse_body(request_body_string.decode())
+        if content_length:
+            request_body_string = await request_stream.readexactly(int(content_length))
+
+            request.parse_body(request_body_string.decode())
 
         return request
 
@@ -103,10 +105,10 @@ class Server:
             request = await self.load_request(client_r)
             self.print_debug(f"connection from: {client_address}")
 
-            response = await self.app.requests_handler(client_address, request)
+            response_string = await self.app.requests_handler(client_address, request)
 
-            if response:
-                client_w.write(response)
+            if response_string:
+                client_w.write(response_string)
 
         except Exception as e:
             self.print_debug(f"error occurred: {str(e)}")
