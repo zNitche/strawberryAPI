@@ -1,3 +1,6 @@
+from eagle.consts import HTTPConsts, RequestsConsts
+
+
 class Request:
     def __init__(self):
         self.protocol = None
@@ -5,7 +8,28 @@ class Request:
         self.method = None
 
         self.header = {}
-        self.body = {}
+        self.body = ""
+
+    def get_body_parser_by_content_type(self):
+        # looks like __subclasses__() is not supported by micropython :/
+        # for parser in request_payload_parsers.ParserBase.__subclasses__():
+        #     if parser.get_content_type() == self.header.get(HTTPConsts.CONTENT_TYPE):
+        #         parser_by_content_type = parser
+        #         break
+
+        return RequestsConsts.REQUEST_PARSERS.get(self.header.get(HTTPConsts.CONTENT_TYPE))
+
+    def get_parsed_body(self):
+        parser = self.get_body_parser_by_content_type()
+        body = self.body
+
+        if parser:
+            try:
+                body = parser.parse(self.body)
+            except:
+                pass
+
+        return body
 
     def parse_header(self, header_string):
         splitted_request_string = self.split_request_string(header_string)
@@ -17,8 +41,7 @@ class Request:
             self.header = self.parse_request_string(splitted_request_string)
 
     def parse_body(self, body_string):
-        splitted_request_string = self.split_request_string(body_string)
-        self.body = self.parse_request_string(splitted_request_string)
+        self.body = body_string.replace("\r", "").replace("\n", "")
 
     def parse_request_string(self, splitted_request_string):
         request_struct = {}
