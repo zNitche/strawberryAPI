@@ -2,7 +2,7 @@ import network
 import sys
 import time
 import uasyncio
-from configs.server_config import ServerConfig
+from config import ServerConfig
 from eagle.utils import machine_utils
 from eagle.communication.request import Request
 from eagle.consts import HTTPConsts

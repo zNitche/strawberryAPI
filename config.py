@@ -12,3 +12,7 @@ class ServerConfig:
     DEBUG_MODE = True
 
     HOTSPOT_MODE = False
+
+
+class AppConfig:
+    DEBUG_MODE = True

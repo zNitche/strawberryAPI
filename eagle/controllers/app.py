@@ -1,5 +1,5 @@
 from eagle.communication.response import Response
-from configs.app_config import AppConfig
+from config import AppConfig
 
 
 class App:
