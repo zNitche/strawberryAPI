@@ -1,12 +1,12 @@
 from eagle.routes.route import Route
+from eagle.routes.base.routes_handler import RoutesHandler
 
 
-class Blueprint:
+class Blueprint(RoutesHandler):
     def __init__(self, name, url_prefix=None):
-        self.name = name
-        self.url_prefix = url_prefix
+        super().__init__(name)
 
-        self.routes = []
+        self.url_prefix = url_prefix
 
     def add_route(self, url, route_handler, methods):
         self.routes.append(Route(url, route_handler, methods))

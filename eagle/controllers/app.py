@@ -8,7 +8,7 @@ class App:
         self.debug_mode = debug_mode
 
         self.blueprints = []
-        self.errors_routes = errors.app_errors_routes
+        self.errors_routes = errors.routes
 
     async def requests_handler(self, client_addr, request):
         response = self.handle_app_error(500)

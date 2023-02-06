@@ -1,17 +1,16 @@
 from eagle.routes.errors.error_route import ErrorRoute
+from eagle.routes.base.routes_handler import RoutesHandler
 
 
-class AppErrorHandler:
+class AppErrorHandler(RoutesHandler):
     def __init__(self, name):
-        self.name = name
+        super().__init__(name)
 
-        self.app_errors_routes = []
-
-    def add_app_error_route(self, status_code, route_handler):
-        self.app_errors_routes.append(ErrorRoute(route_handler, status_code))
+    def add_route(self, status_code, route_handler):
+        self.routes.append(ErrorRoute(route_handler, status_code))
 
     def app_error(self, status_code):
         def wrapper(func):
-            self.add_app_error_route(status_code, func)
+            self.add_route(status_code, func)
 
         return wrapper
