@@ -9,14 +9,6 @@ class HTTPConsts:
     CONTENT_TYPE_JS = "text/javascript"
 
 
-class RequestsConsts:
-    from eagle.communication import request_payload_parsers as r_parsers
-
-    REQUEST_PARSERS = {
-        r_parsers.JsonParser.get_content_type(): r_parsers.JsonParser,
-    }
-
-
 class ResponseConsts:
     RESPONSES_STATUSES_MESSAGES = {
         200: "OK",

@@ -11,8 +11,7 @@ class App:
 
         if request:
             self.print_debug(f"request header from {client_addr} :{request.header}")
-            self.print_debug(f"request body from {client_addr} :{request.body}")
-            self.print_debug(f"parsed request body from {client_addr} :{request.get_parsed_body()}")
+            self.print_debug(f"request body from {client_addr} :{request.body} | {type(request.body)}")
 
             response = Response(200)
 

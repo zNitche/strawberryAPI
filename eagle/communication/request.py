@@ -1,4 +1,5 @@
-from eagle.consts import HTTPConsts, RequestsConsts
+from eagle.consts import HTTPConsts
+from eagle.registers import RequestsRegister
 
 
 class Request:
@@ -17,19 +18,7 @@ class Request:
         #         parser_by_content_type = parser
         #         break
 
-        return RequestsConsts.REQUEST_PARSERS.get(self.header.get(HTTPConsts.CONTENT_TYPE))
-
-    def get_parsed_body(self):
-        parser = self.get_body_parser_by_content_type()
-        body = self.body
-
-        if parser:
-            try:
-                body = parser.parse(self.body)
-            except:
-                pass
-
-        return body
+        return RequestsRegister.REQUEST_PARSERS.get(self.header.get(HTTPConsts.CONTENT_TYPE))
 
     def parse_header(self, header_string):
         splitted_request_string = self.split_request_string(header_string)
@@ -42,6 +31,13 @@ class Request:
 
     def parse_body(self, body_string):
         self.body = body_string.replace("\r", "").replace("\n", "")
+        parser = self.get_body_parser_by_content_type()
+
+        if parser:
+            try:
+                self.body = parser.parse(self.body)
+            except:
+                pass
 
     def parse_request_string(self, splitted_request_string):
         request_struct = {}
