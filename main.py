@@ -4,6 +4,16 @@ from config import ServerConfig
 from eagle.utils import machine_utils
 
 
+def init_app():
+    app = App()
+
+    from routes.api import api
+
+    app.register_blueprint(api)
+
+    return app
+
+
 def main():
     server = Server()
 
@@ -12,7 +22,7 @@ def main():
     if server.wlan is not None:
         machine_utils.get_onboard_led().on()
 
-        server.set_app(App())
+        server.set_app(init_app())
         server.run_mainloop()
 
 
