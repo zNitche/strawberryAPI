@@ -13,6 +13,8 @@ class Blueprint(RoutesHandler):
 
     def route(self, url, methods=None):
         def wrapper(func):
-            self.add_route(url, func, methods)
+            route_url = f"{self.url_prefix}{url}" if self.url_prefix else url
+
+            self.add_route(route_url, func, methods)
 
         return wrapper
