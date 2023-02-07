@@ -1,8 +1,9 @@
 from eagle.consts import ResponseConsts
+from eagle.consts import HTTPConsts
 
 
 class Response:
-    def __init__(self, status_code=200, content_type=None, payload=None):
+    def __init__(self, status_code=200, content_type=HTTPConsts.CONTENT_TYPE_JSON, payload=None):
         self.headers = {}
         self.status_code = status_code
         self.content_type = content_type
@@ -24,8 +25,11 @@ class Response:
 
         return header_string
 
+    def set_content_type(self):
+        pass
+
     def get_body(self):
-        return ""
+        return self.payload
 
     def get_response_string(self):
         response_string = f"{self.get_header()}\r\n\r\n{self.get_body()}"

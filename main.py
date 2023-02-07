@@ -4,9 +4,10 @@ from config import ServerConfig
 from eagle.utils import machine_utils
 
 
-def init_app():
-    app = App()
+app = App()
 
+
+def init_app():
     from routes.api import api
 
     app.register_blueprint(api)

@@ -7,9 +7,9 @@ class FileResponse(Response):
     def __init__(self, file_path):
         self.file_path = file_path
 
-        super().__init__(content_type=self.get_content_type_by_file_extension())
+        super().__init__(content_type=self.set_content_type())
 
-    def get_content_type_by_file_extension(self):
+    def set_content_type(self):
         file_extension = f".{self.file_path.split('.')[-1]}"
 
         content_type = HTTPConsts.CONTENT_TYPE_HTML

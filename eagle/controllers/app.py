@@ -12,7 +12,7 @@ class App:
         self.errors_routes = errors.routes
 
     async def requests_handler(self, client_addr, request):
-        response = self.handle_app_error(500)
+        response = self.raise_error(500)
 
         if request:
             self.print_debug(f"request header from {client_addr} :{request.header}")
@@ -67,7 +67,7 @@ class App:
 
     def process_route(self, request):
         route = self.get_route_by_url(request.target)
-        response = self.handle_app_error(404)
+        response = self.raise_error(404)
 
         if route:
             response = route.handler(request) if request.method in route.methods else Response(405)
@@ -77,7 +77,7 @@ class App:
     def register_blueprint(self, route):
         self.blueprints.append(route)
 
-    def handle_app_error(self, status_code):
+    def raise_error(self, status_code):
         route = self.get_error_route_by_status_code(status_code)
         response = route.handler() if route else Response(404)
 
