@@ -1,4 +1,5 @@
 from eagle.communication.response import Response
+from eagle.communication.file_response import FileResponse
 from eagle.routes.default.errors import errors
 from config import AppConfig
 
@@ -17,7 +18,13 @@ class App:
             self.print_debug(f"request header from {client_addr} :{request.header}")
             self.print_debug(f"request body from {client_addr} :{request.body} | {type(request.body)}")
 
-            response = self.process_route(request)
+            if self.check_if_requested_static_file(request):
+                self.print_debug("requested static file")
+                response = self.get_static_file(request.target)
+
+            else:
+                self.print_debug("requested route")
+                response = self.process_route(request)
 
             self.print_debug(f"response string for {client_addr}: {response.get_response_string()}")
 
@@ -47,6 +54,16 @@ class App:
         self.print_debug(f"err_route for '{status_code}': {target_error_route.handler.__name__ if target_error_route else None}")
 
         return target_error_route
+
+    def check_if_requested_static_file(self, request):
+        # Check if request url ends with file extension and request method == GET
+        url_extension = request.target.split(".")
+        is_request_get = True if (request.method == "GET") else False
+
+        return True if (len(url_extension) > 1 and is_request_get) else False
+
+    def get_static_file(self, target):
+        return FileResponse(target)
 
     def process_route(self, request):
         route = self.get_route_by_url(request.target)

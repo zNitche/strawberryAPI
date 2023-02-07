@@ -8,6 +8,12 @@ class HTTPConsts:
     CONTENT_TYPE_HTML = "text/html"
     CONTENT_TYPE_JS = "text/javascript"
 
+    FILES_TYPES_BY_EXTENSION = {
+        ".css": CONTENT_TYPE_CSS,
+        ".js": CONTENT_TYPE_JS,
+        ".html": CONTENT_TYPE_HTML
+    }
+
 
 class ResponseConsts:
     RESPONSES_STATUSES_MESSAGES = {
