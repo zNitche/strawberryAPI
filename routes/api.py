@@ -18,6 +18,16 @@ def test_api_error(request):
     return app.raise_error(500)
 
 
+@api.route("/test_api_post", methods=["POST"])
+def test_api_post(request):
+    print(request.body)
+
+    response = Response(200)
+    response.headers["TEST_TOKEN"] = 123
+
+    return response
+
+
 @api.route("/test_page", methods=["GET"])
 def test_page(request):
     return FileResponse(file_path="/routes/index.html")

@@ -19,7 +19,9 @@ class Response:
         status_code = self.status_code if status_message is not None else 500
 
         header_rows = [f"HTTP/1.1 {status_code} {status_message}"]
-        header_rows += [header for header in self.headers]
+
+        for header, value in self.headers.items():
+            header_rows.append(f"{header}: {value}")
 
         header_string = "\r\n".join(header_rows)
 
