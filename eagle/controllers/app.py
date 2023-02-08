@@ -21,19 +21,19 @@ class App:
             self.print_debug(f"request header from {client_addr} :{request.header}")
             self.print_debug(f"request body from {client_addr} :{request.body} | {type(request.body)}")
 
-            if self.check_if_requested_static_file(request):
+            if self.__check_if_requested_static_file(request):
                 self.print_debug("requested static file")
-                response = self.get_static_file(request.target)
+                response = self.__get_static_file(request.target)
 
             else:
                 self.print_debug("requested route")
-                response = self.process_route(request)
+                response = self.__process_route(request)
 
             self.print_debug(f"response string for {client_addr}: '{response.get_response_string()}'")
 
         return response.get_response_string()
 
-    def get_route_by_url(self, url):
+    def __get_route_by_url(self, url):
         target_route = None
 
         for blueprint in self.blueprints:
@@ -46,7 +46,7 @@ class App:
 
         return target_route
 
-    def get_error_route_by_status_code(self, status_code):
+    def __get_error_route_by_status_code(self, status_code):
         target_error_route = None
 
         for route in self.errors_routes:
@@ -59,20 +59,20 @@ class App:
 
         return target_error_route
 
-    def check_if_requested_static_file(self, request):
+    def __check_if_requested_static_file(self, request):
         # Check if request url ends with file extension and request method == GET
         url_extension = request.target.split(".")
         is_request_get = True if (request.method == "GET") else False
 
         return True if (len(url_extension) > 1 and is_request_get) else False
 
-    def get_static_file(self, target):
+    def __get_static_file(self, target):
         self.print_debug(f"static file target: {target}")
 
         return FileResponse(f"{self.static_files_path}/{target}")
 
-    def process_route(self, request):
-        route = self.get_route_by_url(request.target)
+    def __process_route(self, request):
+        route = self.__get_route_by_url(request.target)
         response = self.raise_error(404)
 
         if route:
@@ -84,7 +84,7 @@ class App:
         self.blueprints.append(route)
 
     def raise_error(self, status_code):
-        route = self.get_error_route_by_status_code(status_code)
+        route = self.__get_error_route_by_status_code(status_code)
         response = route.handler() if route else Response(404)
 
         return response

@@ -29,14 +29,14 @@ class Server:
         if self.debug_mode:
             print(f"[SERVER] - {message}")
 
-    def setup_wlan_as_client(self):
+    def __setup_wlan_as_client(self):
         self.print_debug(f"setting up server as client...")
 
         self.wlan = network.WLAN(network.STA_IF)
 
         self.wlan.active(True)
 
-    def setup_wlan_as_host(self):
+    def __setup_wlan_as_host(self):
         self.print_debug(f"setting up server as host...")
 
         self.wlan = network.WLAN(network.AP_IF)
@@ -46,7 +46,7 @@ class Server:
 
         self.print_debug(f"WLAN config: {self.wlan.ifconfig()}")
 
-    def connect_to_network(self):
+    def __connect_to_network(self):
         tries = 0
 
         self.wlan.disconnect()
@@ -67,13 +67,13 @@ class Server:
             machine_utils.blink_onboard_led(blinks=3)
 
     def run_as_client(self):
-        self.setup_wlan_as_client()
-        self.connect_to_network()
+        self.__setup_wlan_as_client()
+        self.__connect_to_network()
 
     def run_as_host(self):
-        self.setup_wlan_as_host()
+        self.__setup_wlan_as_host()
 
-    async def load_request(self, request_stream):
+    async def __load_request(self, request_stream):
         request_header_string = ""
 
         while True:
@@ -98,11 +98,11 @@ class Server:
 
         return request
 
-    async def requests_handler(self, client_r, client_w):
+    async def __requests_handler(self, client_r, client_w):
         try:
             client_address = client_w.get_extra_info("peername")
 
-            request = await self.load_request(client_r)
+            request = await self.__load_request(client_r)
             self.print_debug(f"connection from: {client_address}")
 
             response_string = await self.app.requests_handler(client_address, request)
@@ -125,7 +125,7 @@ class Server:
         self.print_debug("starting mainloop...")
 
         if self.wlan is not None:
-            self.mainloop.create_task(uasyncio.start_server(self.requests_handler, self.host, self.port))
+            self.mainloop.create_task(uasyncio.start_server(self.__requests_handler, self.host, self.port))
 
             self.print_debug("mainloop running...")
             self.mainloop.run_forever()
