@@ -31,7 +31,7 @@ class Response:
         pass
 
     def get_body(self):
-        return self.payload
+        return self.payload if self.payload else ""
 
     def get_response_string(self):
         response_string = f"{self.get_header()}\r\n\r\n{self.get_body()}"
