@@ -22,4 +22,5 @@ class ResponseConsts:
         404: "Not Found",
         405: "Method Not Allowed",
         400: "Bad Request",
+        301: "Moved Permanently",
     }

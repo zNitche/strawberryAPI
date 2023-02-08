@@ -29,7 +29,7 @@ class App:
                 self.print_debug("requested route")
                 response = self.process_route(request)
 
-            self.print_debug(f"response string for {client_addr}: {response.get_response_string()}")
+            self.print_debug(f"response string for {client_addr}: '{response.get_response_string()}'")
 
         return response.get_response_string()
 
@@ -88,6 +88,19 @@ class App:
         response = route.handler() if route else Response(404)
 
         return response
+
+    def url_for(self, endpoint_name):
+        endpoint_url = None
+
+        for blueprint in self.blueprints:
+            for route in blueprint.routes:
+                route_full_name = f"{blueprint.name}.{route.handler.__name__}"
+
+                if route_full_name == endpoint_name:
+                    endpoint_url = route.url
+                    break
+
+        return endpoint_url
 
     def print_debug(self, message):
         if self.debug_mode:
