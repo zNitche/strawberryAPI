@@ -5,8 +5,11 @@ from config import AppConfig
 
 
 class App:
-    def __init__(self, debug_mode=AppConfig.DEBUG_MODE):
+    def __init__(self, static_files_path="/static",
+                 debug_mode=AppConfig.DEBUG_MODE):
+
         self.debug_mode = debug_mode
+        self.static_files_path = static_files_path
 
         self.blueprints = []
         self.errors_routes = errors.routes
@@ -51,7 +54,8 @@ class App:
                 target_error_route = route
                 break
 
-        self.print_debug(f"err_route for '{status_code}': {target_error_route.handler.__name__ if target_error_route else None}")
+        self.print_debug(
+            f"err_route for '{status_code}': {target_error_route.handler.__name__ if target_error_route else None}")
 
         return target_error_route
 
@@ -63,7 +67,9 @@ class App:
         return True if (len(url_extension) > 1 and is_request_get) else False
 
     def get_static_file(self, target):
-        return FileResponse(target)
+        self.print_debug(f"static file target: {target}")
+
+        return FileResponse(f"{self.static_files_path}/{target}")
 
     def process_route(self, request):
         route = self.get_route_by_url(request.target)
