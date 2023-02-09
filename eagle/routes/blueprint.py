@@ -4,10 +4,9 @@ from eagle.routes.base.routes_handler import RoutesHandler
 
 class Blueprint(RoutesHandler):
     def __init__(self, name, url_prefix=None, templates_dir=""):
-        super().__init__(name)
+        super().__init__(name, templates_dir=templates_dir)
 
         self.url_prefix = url_prefix
-        self.templates_dir = templates_dir
 
     def add_route(self, url, route_handler, methods):
         self.routes.append(Route(url, route_handler, methods))
@@ -28,6 +27,3 @@ class Blueprint(RoutesHandler):
         found = True if len([route for route in self.routes if route.url == url]) > 0 else False
 
         return found
-
-    def get_template_path(self, template_name):
-        return f"{self.templates_dir}/{template_name}"
