@@ -1,6 +1,5 @@
 from eagle.routes.blueprint import Blueprint
 from eagle.communication.response import Response
-from eagle.communication.file_response import FileResponse
 from eagle.utils import routes_utils
 from main import app
 import json
@@ -16,7 +15,7 @@ def test_api(request):
 
 @api.route("/test_page", methods=["GET"])
 def test_page(request):
-    return FileResponse(file_path=api.get_template_path("index.html"))
+    return routes_utils.render_template(api.get_template_path("index.html"), {})
 
 
 @api.route("/test_page_redirect", methods=["GET"])

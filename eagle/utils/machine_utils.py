@@ -24,3 +24,4 @@ def blink_onboard_led(pause_duration=0.3, blinks=1):
         time.sleep(pause_duration)
         led.off()
 
+    led.on()

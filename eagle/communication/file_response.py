@@ -4,12 +4,15 @@ from eagle.utils import files_utils
 
 
 class FileResponse(Response):
-    def __init__(self, file_path):
+    def __init__(self, file_path, content_type=None):
         self.file_path = file_path
 
-        super().__init__(content_type=self.set_content_type())
+        self.content_type = self.get_content_type_by_extension() if content_type is None else HTTPConsts.CONTENT_TYPE_HTML
+        self.file_content = self.process_file()
 
-    def set_content_type(self):
+        super().__init__(content_type=self.content_type)
+
+    def get_content_type_by_extension(self):
         file_extension = f".{self.file_path.split('.')[-1]}"
 
         content_type = HTTPConsts.CONTENT_TYPE_HTML
@@ -33,4 +36,4 @@ class FileResponse(Response):
         return file_content
 
     def get_body(self):
-        return self.process_file()
+        return self.file_content
