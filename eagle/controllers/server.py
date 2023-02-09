@@ -100,6 +100,8 @@ class Server:
 
     async def __requests_handler(self, client_r, client_w):
         try:
+            start_time = time.ticks_ms() if self.debug_mode else None
+
             client_address = client_w.get_extra_info("peername")
 
             request = await self.__load_request(client_r)
@@ -120,6 +122,9 @@ class Server:
             client_w.close()
 
             await client_w.wait_closed()
+
+            if self.debug_mode:
+                print(f"request took: {time.ticks_ms() - start_time}ms")
 
     def run_mainloop(self):
         self.print_debug("starting mainloop...")
