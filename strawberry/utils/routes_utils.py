@@ -1,5 +1,5 @@
-from eagle.communication.response import Response
-from eagle.communication.file_response import FileResponse
+from strawberry.communication.response import Response
+from strawberry.communication.file_response import FileResponse
 
 
 def redirect(url):

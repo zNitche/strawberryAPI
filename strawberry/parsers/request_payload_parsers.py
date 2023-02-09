@@ -1,4 +1,4 @@
-from eagle.consts import HTTPConsts
+from strawberry.consts import HTTPConsts
 import json
 
 

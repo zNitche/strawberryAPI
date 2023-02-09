@@ -1,5 +1,5 @@
-from eagle.routes.errors.error_route import ErrorRoute
-from eagle.routes.base.routes_handler import RoutesHandler
+from strawberry.routes.errors.error_route import ErrorRoute
+from strawberry.routes.base.routes_handler import RoutesHandler
 
 
 class AppErrorHandler(RoutesHandler):

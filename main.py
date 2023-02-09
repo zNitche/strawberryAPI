@@ -1,7 +1,7 @@
-from eagle.controllers.server import Server
-from eagle.controllers.app import App
+from strawberry.controllers.server import Server
+from strawberry.controllers.app import App
 from config import ServerConfig
-from eagle.utils import machine_utils
+from strawberry.utils import machine_utils
 
 
 app = App()

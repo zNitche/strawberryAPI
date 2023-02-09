@@ -1,5 +1,5 @@
-from eagle.routes.errors.app_errorhandler import AppErrorHandler
-from eagle.communication.response import Response
+from strawberry.routes.errors.app_errorhandler import AppErrorHandler
+from strawberry.communication.response import Response
 
 
 errors = AppErrorHandler("errors")

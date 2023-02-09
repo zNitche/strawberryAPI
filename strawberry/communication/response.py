@@ -1,5 +1,5 @@
-from eagle.consts import ResponseConsts
-from eagle.consts import HTTPConsts
+from strawberry.consts import ResponseConsts
+from strawberry.consts import HTTPConsts
 
 
 class Response:

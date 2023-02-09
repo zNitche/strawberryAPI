@@ -1,6 +1,6 @@
-from eagle.consts import HTTPConsts
-from eagle.communication.response import Response
-from eagle.utils import files_utils
+from strawberry.consts import HTTPConsts
+from strawberry.communication.response import Response
+from strawberry.utils import files_utils
 
 
 class FileResponse(Response):

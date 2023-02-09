@@ -1,6 +1,6 @@
-from eagle.communication.response import Response
-from eagle.communication.file_response import FileResponse
-from eagle.routes.default.errors import errors
+from strawberry.communication.response import Response
+from strawberry.communication.file_response import FileResponse
+from strawberry.routes.default.errors import errors
 from config import AppConfig
 
 

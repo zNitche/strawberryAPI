@@ -1,5 +1,5 @@
-from eagle.routes.route import Route
-from eagle.routes.base.routes_handler import RoutesHandler
+from strawberry.routes.route import Route
+from strawberry.routes.base.routes_handler import RoutesHandler
 
 
 class Blueprint(RoutesHandler):

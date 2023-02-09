@@ -3,9 +3,9 @@ import sys
 import time
 import uasyncio
 from config import ServerConfig
-from eagle.utils import machine_utils
-from eagle.communication.request import Request
-from eagle.consts import HTTPConsts
+from strawberry.utils import machine_utils
+from strawberry.communication.request import Request
+from strawberry.consts import HTTPConsts
 
 
 class Server:

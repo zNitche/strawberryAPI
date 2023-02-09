@@ -1,4 +1,4 @@
-from eagle.routes.base.route_base import RouteBase
+from strawberry.routes.base.route_base import RouteBase
 
 
 class ErrorRoute(RouteBase):

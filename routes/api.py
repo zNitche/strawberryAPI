@@ -1,6 +1,6 @@
-from eagle.routes.blueprint import Blueprint
-from eagle.communication.response import Response
-from eagle.utils import routes_utils
+from strawberry.routes.blueprint import Blueprint
+from strawberry.communication.response import Response
+from strawberry.utils import routes_utils
 from main import app
 import json
 

@@ -1,5 +1,5 @@
-from eagle.consts import HTTPConsts
-from eagle.registers import RequestsRegister
+from strawberry.consts import HTTPConsts
+from strawberry.registers import RequestsRegister
 
 
 class Request:
