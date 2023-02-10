@@ -22,7 +22,9 @@ class App:
 
             if self.__check_if_requested_static_file(request):
                 self.print_debug("requested static file")
-                response = self.__get_static_file(request.target)
+
+                target = request.target.split("static/")[-1]
+                response = self.__get_static_file(target)
 
             else:
                 self.print_debug("requested route")
