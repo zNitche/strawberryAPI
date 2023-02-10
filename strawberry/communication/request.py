@@ -1,5 +1,5 @@
 from strawberry.consts import HTTPConsts
-from strawberry.registers import RequestsRegister
+from strawberry.parsers.request_payload_parser import RequestPayloadParser
 
 
 class Request:
@@ -11,14 +11,7 @@ class Request:
         self.header = {}
         self.body = ""
 
-    def get_body_parser_by_content_type(self):
-        # looks like __subclasses__() is not supported by micropython :/
-        # for parser in request_payload_parsers.ParserBase.__subclasses__():
-        #     if parser.get_content_type() == self.header.get(HTTPConsts.CONTENT_TYPE):
-        #         parser_by_content_type = parser
-        #         break
-
-        return RequestsRegister.REQUEST_PARSERS.get(self.header.get(HTTPConsts.CONTENT_TYPE))
+        self.payload_parser = RequestPayloadParser()
 
     def parse_header(self, header_string):
         splitted_request_string = self.split_request_string(header_string)
@@ -30,14 +23,8 @@ class Request:
             self.header = self.parse_request_string(splitted_request_string)
 
     def parse_body(self, body_string):
-        self.body = body_string.replace("\r", "").replace("\n", "")
-        parser = self.get_body_parser_by_content_type()
-
-        if parser:
-            try:
-                self.body = parser.parse(self.body)
-            except:
-                pass
+        body = body_string.replace("\r", "").replace("\n", "")
+        self.body = self.payload_parser.parse_payload(self.header.get(HTTPConsts.CONTENT_TYPE), body)
 
     def parse_request_string(self, splitted_request_string):
         request_struct = {}

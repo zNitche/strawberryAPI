@@ -15,7 +15,11 @@ def test_api(request):
 
 @api.route("/test_page", methods=["GET"])
 def test_page(request):
-    return routes_utils.render_template(api.get_template_path("index.html"), {})
+    context = {
+        "test_var": "parsed test var"
+    }
+
+    return routes_utils.render_template(api.get_template_path("index.html"), context)
 
 
 @api.route("/test_page_redirect", methods=["GET"])
