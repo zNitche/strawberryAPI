@@ -17,8 +17,4 @@ def render_template(path, context):
     file_content = files_utils.get_file_content(path)
     file_content = template_parser.parse_template(file_content, context)
 
-    response = FileResponse(file_content=file_content)
-
-    print(f"file content: {response.file_content}, status code: {response.status_code}")
-
-    return response
+    return FileResponse(file_content=file_content)

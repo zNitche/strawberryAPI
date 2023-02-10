@@ -1,4 +1,4 @@
-from strawberry.parsers.workers import request_payload_parsers as parsers
+from strawberry.parsers import request_payload_parsers_registry as parsers
 import sys
 
 
