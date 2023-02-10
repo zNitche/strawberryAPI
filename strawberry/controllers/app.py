@@ -1,12 +1,11 @@
 from strawberry.communication.response import Response
 from strawberry.communication.file_response import FileResponse
 from strawberry.routes.default.errors import errors
-from config import AppConfig
 
 
 class App:
     def __init__(self, static_files_path="/static",
-                 debug_mode=AppConfig.DEBUG_MODE):
+                 debug_mode=False):
 
         self.debug_mode = debug_mode
         self.static_files_path = static_files_path
