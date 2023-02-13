@@ -4,7 +4,7 @@ import sys
 
 class TemplateParser:
     def __init__(self):
-        self.base_template_define_start = "#BASE"
+        self.base_template_define_start = "#EXTEND"
 
         self.var_start = "{{"
         self.var_end = "}}"
@@ -59,11 +59,14 @@ class TemplateParser:
             base_section = base_sections.get(template_section_name)
 
             if base_section:
+                section_start = base_section["start"]
+                section_end = base_section["end"] + 1
+
                 templ_between = splitted_template[template_section["start"]: template_section["end"]]
 
-                splitted_base_template = splitted_base_template[:(base_section["start"] - 1)] + \
+                splitted_base_template = splitted_base_template[:section_start - 1] + \
                                          templ_between + \
-                                         splitted_base_template[(base_section["end"] + 2):]
+                                         splitted_base_template[section_end + 1:]
 
         return "\n".join(splitted_base_template)
 
