@@ -3,12 +3,10 @@ from strawberry.controllers.app import App
 from strawberry.utils import machine_utils
 
 
-app = App(debug_mode=True)
+def create_app():
+    app = App(debug_mode=True)
 
-
-def init_app():
     from routes.api import api
-
     app.register_blueprint(api)
 
     return app
@@ -21,7 +19,9 @@ def main():
     if server.wlan is not None:
         machine_utils.get_onboard_led().on()
 
-        server.set_app(init_app())
+        app = create_app()
+
+        server.set_app(app)
         server.run_mainloop()
 
 

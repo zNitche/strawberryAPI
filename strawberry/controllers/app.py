@@ -13,6 +13,8 @@ class App:
         self.blueprints = []
         self.errors_routes = errors.routes
 
+        self.print_debug("App created...")
+
     async def requests_handler(self, client_addr, request):
         response = self.raise_error(500)
 
@@ -81,8 +83,9 @@ class App:
 
         return response
 
-    def register_blueprint(self, route):
-        self.blueprints.append(route)
+    def register_blueprint(self, blueprint):
+        blueprint.set_app(self)
+        self.blueprints.append(blueprint)
 
     def raise_error(self, status_code):
         route = self.__get_error_route_by_status_code(status_code)
@@ -93,11 +96,19 @@ class App:
     def url_for(self, endpoint_name):
         endpoint_url = None
 
+        self.print_debug(f"url_for: {endpoint_name}")
+
         for blueprint in self.blueprints:
+            self.print_debug(blueprint.name)
+
             for route in blueprint.routes:
                 route_full_name = f"{blueprint.name}.{route.handler.__name__}"
 
                 if route_full_name == endpoint_name:
+
+                    self.print_debug(blueprint.url_prefix)
+                    self.print_debug(route.url)
+
                     endpoint_url = route.url
                     break
 

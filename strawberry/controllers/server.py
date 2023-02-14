@@ -103,6 +103,8 @@ class Server:
 
             request_header_string += request_line
 
+        self.print_debug(f"request string: {request_header_string}")
+
         request = Request()
         request.parse_header(request_header_string)
 

@@ -1,7 +1,6 @@
 from strawberry.routes.blueprint import Blueprint
 from strawberry.communication.response import Response
 from strawberry.utils import routes_utils
-from main import app
 import json
 
 
@@ -29,14 +28,14 @@ def test_page_url_args(request):
 
 @api.route("/test_page_redirect", methods=["GET"])
 def test_page_redirect(request):
-    url = app.url_for("api.test_page")
+    url = api.current_app.url_for("api.test_page")
 
     return routes_utils.redirect(url)
 
 
 @api.route("/test_api_error", methods=["POST"])
 def test_api_error(request):
-    return app.raise_error(500)
+    return api.current_app.raise_error(500)
 
 
 @api.route("/test_api_post", methods=["POST"])
