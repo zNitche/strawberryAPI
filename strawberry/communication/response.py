@@ -27,9 +27,6 @@ class Response:
 
         return header_string
 
-    def set_content_type(self):
-        pass
-
     def get_body(self):
         return self.payload if self.payload else ""
 

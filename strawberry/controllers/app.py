@@ -34,12 +34,12 @@ class App:
 
         return response.get_response_string()
 
-    def __get_route_by_url(self, url):
+    def __get_route_for_url(self, url):
         target_route = None
 
         for blueprint in self.blueprints:
             for route in blueprint.routes:
-                if route.url == url:
+                if route.match_url(url):
                     target_route = route
                     break
 
@@ -73,7 +73,7 @@ class App:
         return FileResponse(f"{self.static_files_path}/{target}")
 
     def __process_route(self, request):
-        route = self.__get_route_by_url(request.target)
+        route = self.__get_route_for_url(request.target)
         response = self.raise_error(404)
 
         if route:
