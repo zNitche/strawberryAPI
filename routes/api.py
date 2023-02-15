@@ -32,7 +32,7 @@ def test_page_url_args(request):
 
 @api.route("/test_page_redirect", methods=["GET"])
 def test_page_redirect(request):
-    url = api.current_app.url_for("api.test_page")
+    url = api.current_app.url_for("api.test_page_url_args", path_parameters={"arg_1": 123})
 
     return routes_utils.redirect(url)
 

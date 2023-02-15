@@ -19,6 +19,19 @@ class Route(RouteBase):
 
         return splitted_url
 
+    def concat_url_with_parameters(self, parameters):
+        url = self.url
+
+        for parameter in parameters:
+            parameter_slot_name = f"{self.path_argument_start}{parameter}{self.path_argument_end}"
+
+            parameter_value = parameters.get(parameter)
+            parameter_value = str(parameter_value) if parameter_value else parameter_value
+
+            url = url.replace(parameter_slot_name, parameter_value)
+
+        return url
+
     def get_url_pattern_data(self):
         splitted_url = self.split_url(self.url)
         url_pattern_data = []

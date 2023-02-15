@@ -106,23 +106,17 @@ class App:
 
         return response
 
-    def url_for(self, endpoint_name):
+    def url_for(self, endpoint_name, path_parameters=None):
         endpoint_url = None
 
-        self.print_debug(f"url_for: {endpoint_name}")
-
         for blueprint in self.blueprints:
-            self.print_debug(blueprint.name)
-
             for route in blueprint.routes:
                 route_full_name = f"{blueprint.name}.{route.handler.__name__}"
 
                 if route_full_name == endpoint_name:
+                    endpoint_url = route.url if not route.accepts_path_parameters()\
+                        else route.concat_url_with_parameters(path_parameters)
 
-                    self.print_debug(blueprint.url_prefix)
-                    self.print_debug(route.url)
-
-                    endpoint_url = route.url
                     break
 
         return endpoint_url
