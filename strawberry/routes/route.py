@@ -11,35 +11,47 @@ class Route(RouteBase):
         self.path_argument_start = "<"
         self.path_argument_end = ">"
 
-    def get_url_pattern_data(self):
-        splitted_url = self.url.split("/")
+    def split_url(self, url):
+        splitted_url = url.split("/")
 
         if splitted_url[0] == "":
             splitted_url.pop(0)
 
+        return splitted_url
+
+    def get_url_pattern_data(self):
+        splitted_url = self.split_url(self.url)
         url_pattern_data = []
 
-        for url_part in splitted_url:
+        for url_position, url_part in enumerate(splitted_url):
             is_parameter = True if url_part.startswith(self.path_argument_start) and \
                                    url_part.endswith(self.path_argument_end) else False
 
             url_pattern_data.append({
+                "url_position": url_position,
                 "url_part": url_part,
                 "is_parameter": is_parameter
             })
 
         return url_pattern_data
 
+    def get_path_parameter_name_by_position(self, url_position):
+        splitted_url = self.split_url(self.url)
+        parameter_name = None
+
+        if url_position < len(splitted_url):
+            url_item = splitted_url[url_position]
+
+            parameter_name = url_item.replace(self.path_argument_start, "").replace(self.path_argument_end, "")
+
+        return parameter_name
+
     def match_bare_url(self, url):
         return True if url == self.url else False
 
     def match_url_with_parameters(self, url):
-        splitted_url = url.split("/")
-        splitted_self_url = self.url.split("/")
-
-        if splitted_url[0] == "" and splitted_self_url[0] == "":
-            splitted_url.pop(0)
-            splitted_self_url.pop(0)
+        splitted_url = self.split_url(url)
+        splitted_self_url = self.split_url(self.url)
 
         url_pattern_data = self.get_url_pattern_data()
 
@@ -57,9 +69,27 @@ class Route(RouteBase):
 
         return True if (lengths_match and pattern_match and non_empty_parts) else False
 
-    def match_url(self, url):
-        if self.path_argument_start in self.url and self.path_argument_end in self.url:
-            return self.match_url_with_parameters(url)
+    def accepts_path_parameters(self):
+        return self.path_argument_start in self.url and self.path_argument_end in self.url
 
-        else:
-            return self.match_bare_url(url)
+    def match_url(self, url):
+        match = self.match_url_with_parameters(url) if self.accepts_path_parameters() else self.match_bare_url(url)
+
+        return match
+
+    def get_path_parameters_for_url(self, url):
+        parameters = {}
+
+        if self.accepts_path_parameters():
+            url_pattern_data = self.get_url_pattern_data()
+            splitted_url = self.split_url(url)
+
+            for data_part in url_pattern_data:
+                if data_part["is_parameter"]:
+                    url_position = data_part["url_position"]
+                    parameter_name = self.get_path_parameter_name_by_position(url_position)
+
+                    if parameter_name and url_position < len(splitted_url):
+                        parameters[parameter_name] = splitted_url[url_position]
+
+        return parameters

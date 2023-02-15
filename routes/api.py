@@ -14,6 +14,8 @@ def test_api(request):
 
 @api.route("/test_page", methods=["GET"])
 def test_page(request):
+    print(request.path_parameters)
+
     context = {
         "test_var": "parsed test var"
     }
@@ -23,6 +25,8 @@ def test_page(request):
 
 @api.route("/test_page_url_args/<arg_1>", methods=["GET"])
 def test_page_url_args(request):
+    print(request.path_parameters)
+
     return Response(200)
 
 

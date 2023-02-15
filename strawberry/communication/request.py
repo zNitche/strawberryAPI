@@ -11,6 +11,8 @@ class Request:
         self.header = {}
         self.body = ""
 
+        self.path_parameters = {}
+
         self.payload_parser = RequestPayloadParser()
 
     def parse_header(self, header_string):

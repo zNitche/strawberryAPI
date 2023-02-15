@@ -47,7 +47,10 @@ class App:
 
         self.print_debug(f"route for url '{url}': {target_route.handler.__name__ if target_route else None}")
 
-        return target_route
+        path_parameters = target_route.get_path_parameters_for_url(url) if target_route else None
+        self.print_debug(f"path parameters for '{url}': {path_parameters}")
+
+        return target_route, path_parameters
 
     def __get_error_route_by_status_code(self, status_code):
         target_error_route = None
@@ -75,10 +78,11 @@ class App:
         return FileResponse(f"{self.static_files_path}/{target}")
 
     def __process_route(self, request):
-        route = self.__get_route_for_url(request.target)
+        route, path_parameters = self.__get_route_for_url(request.target)
         response = self.raise_error(404)
 
         if route:
+            request.path_parameters = path_parameters
             response = route.handler(request) if request.method in route.methods else Response(405)
 
         return response
