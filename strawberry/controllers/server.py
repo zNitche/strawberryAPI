@@ -2,6 +2,7 @@ import network
 import sys
 import time
 import uasyncio
+import gc
 from strawberry.utils import machine_utils
 from strawberry.communication.request import Request
 from strawberry.consts import HTTPConsts
@@ -41,7 +42,7 @@ class Server:
 
     def print_debug(self, message):
         if self.debug_mode:
-            print(f"[SERVER] - {message}")
+            print(f"[SERVER][FREE_MEM: {int(gc.mem_free() / 1024)}kB] - {message}")
 
     def __setup_wlan_as_client(self):
         self.print_debug(f"setting up server as client...")

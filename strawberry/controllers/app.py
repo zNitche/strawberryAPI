@@ -2,6 +2,7 @@ from strawberry.communication.response import Response
 from strawberry.communication.file_response import FileResponse
 from strawberry.routes.default.errors import errors
 import sys
+import gc
 
 
 class App:
@@ -123,4 +124,4 @@ class App:
 
     def print_debug(self, message):
         if self.debug_mode:
-            print(f"[APP] - {message}")
+            print(f"[APP][FREE_MEM: {int(gc.mem_free() / 1024)}kB] - {message}")
