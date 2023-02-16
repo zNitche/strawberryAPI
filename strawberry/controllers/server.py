@@ -103,7 +103,7 @@ class Server:
 
             request_header_string += request_line
 
-        self.print_debug(f"request string: {request_header_string}")
+        self.print_debug(f"request header string: {request_header_string}")
 
         request = Request()
         request.parse_header(request_header_string)
@@ -114,6 +114,8 @@ class Server:
             request_body_string = await request_stream.readexactly(int(content_length))
 
             request.parse_body(request_body_string.decode())
+
+        self.print_debug(f"request body string: {request.body}")
 
         return request
 

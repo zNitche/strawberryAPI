@@ -1,11 +1,12 @@
-from strawberry.parsers import request_payload_parsers_registry as parsers
+from strawberry.parsers import request_payload_parsers as parsers
 import sys
 
 
 class RequestPayloadParser:
     def __init__(self):
         self.parsers = {
-            parsers.JsonParser.get_content_type(): parsers.JsonParser
+            parsers.JsonParser.get_content_type(): parsers.JsonParser,
+            parsers.FormDataParser.get_content_type(): parsers.FormDataParser,
         }
 
     def get_parser(self, content_type):

@@ -23,6 +23,19 @@ def test_page(request):
     return routes_utils.render_template(api.get_template_path("index.html"), context)
 
 
+@api.route("/test_forms_page", methods=["GET"])
+def test_forms_page(request):
+    return routes_utils.render_template(api.get_template_path("forms.html"), {})
+
+
+@api.route("/form_test", methods=["POST"])
+def form_test(request):
+    print(f"form request body: {request.body}")
+    url = api.current_app.url_for("api.test_page_url_args", path_parameters={"arg_1": request.body.get("name")})
+
+    return routes_utils.redirect(url)
+
+
 @api.route("/test_page_url_args/<arg_1>", methods=["GET"])
 def test_page_url_args(request):
     print(request.path_parameters)
