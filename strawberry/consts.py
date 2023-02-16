@@ -25,3 +25,18 @@ class ResponseConsts:
         400: "Bad Request",
         301: "Moved Permanently",
     }
+
+
+class FormatConsts:
+    PATH_ARGUMENT_START = "<"
+    PATH_ARGUMENT_END = ">"
+
+    BASE_TEMPLATE_DEFINE = "#EXTEND"
+
+    TEMPLATE_VAR_START = "{{"
+    TEMPLATE_VAR_END = "}}"
+
+    TEMPLATE_SECTION_START = "#SECTION"
+    TEMPLATE_SECTION_END = "#END"
+
+    TEMPLATE_SECTION_SLOT = "#SECTION_SLOT"

@@ -1,19 +1,12 @@
 from strawberry.utils import files_utils
+from strawberry.consts import FormatConsts
 import sys
 import re
 
 
 class TemplateParser:
     def __init__(self):
-        self.base_template_define = "#EXTEND"
-
-        self.var_start = "{{"
-        self.var_end = "}}"
-
-        self.template_section_start = "#SECTION"
-        self.template_section_end = "#END"
-
-        self.template_section_slot = "#SECTION_SLOT"
+        pass
 
     def parse_template(self, template_content, context):
         try:
@@ -28,7 +21,7 @@ class TemplateParser:
 
     def parse_variables(self, template, context):
         for context_var in context:
-            var_string = f"{self.var_start}{context_var}{self.var_end}"
+            var_string = f"{FormatConsts.TEMPLATE_VAR_START}{context_var}{FormatConsts.TEMPLATE_VAR_END}"
             template = template.replace(var_string, context[context_var])
 
         return template
@@ -36,12 +29,12 @@ class TemplateParser:
     def merge_with_parent_template(self, template):
         first_row = template.split("\n")[0].strip()
 
-        if first_row.startswith(self.base_template_define):
+        if first_row.startswith(FormatConsts.BASE_TEMPLATE_DEFINE):
             base_template_path = first_row.split()[-1]
             base_template_content = files_utils.get_file_content(base_template_path)
 
             if base_template_content:
-                template = template.replace(f"{self.base_template_define} {base_template_path}", "")
+                template = template.replace(f"{FormatConsts.BASE_TEMPLATE_DEFINE} {base_template_path}", "")
 
                 base_template_sections_slots = self.get_sections_slots_from_template(base_template_content)
                 template_sections = self.get_sections_from_template(template)
@@ -60,7 +53,7 @@ class TemplateParser:
             template_section = template_sections.get(template_section_name)
 
             if template_section_name in sections_slots_names:
-                base_section_slot_name = f"{self.template_section_slot} {template_section_name}"
+                base_section_slot_name = f"{FormatConsts.TEMPLATE_SECTION_SLOT} {template_section_name}"
                 templ_between = splitted_template[template_section["start"]: template_section["end"] + 1]
 
                 base_template = re.sub(f"{base_section_slot_name}\n", "\n".join(templ_between), base_template)
@@ -79,11 +72,11 @@ class TemplateParser:
         for row_id, row in enumerate(template.split("\n")):
             stripped_row = row.strip()
 
-            if stripped_row.startswith(self.template_section_start):
+            if stripped_row.startswith(FormatConsts.TEMPLATE_SECTION_START):
                 section_name = stripped_row.split()[-1]
                 section_start = row_id + 1
 
-            if stripped_row == f"{self.template_section_end} {section_name}":
+            if stripped_row == f"{FormatConsts.TEMPLATE_SECTION_END} {section_name}":
                 section_end = row_id - 1
 
                 if section_name and section_start:
@@ -100,13 +93,13 @@ class TemplateParser:
         for row_id, row in enumerate(template.split("\n")):
             stripped_row = row.strip()
 
-            if stripped_row.startswith(self.template_section_start):
+            if stripped_row.startswith(FormatConsts.TEMPLATE_SECTION_START):
                 sections_slots.append(stripped_row.split()[-1])
 
         return sections_slots
 
     def clear_section_slots(self, template, slots_names):
         for name in slots_names:
-            template = template.replace(f"{self.template_section_slot} {name}", "")
+            template = template.replace(f"{FormatConsts.TEMPLATE_SECTION_SLOT} {name}", "")
 
         return template
