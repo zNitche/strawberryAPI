@@ -61,3 +61,8 @@ def test_api_post(request):
     response.headers["TEST_TOKEN"] = 123
 
     return response
+
+
+@api.route("/test_get_file", methods=["GET"])
+def test_get_file(request):
+    return routes_utils.send_file("/routes/data/test_data.txt", "test_file.txt")

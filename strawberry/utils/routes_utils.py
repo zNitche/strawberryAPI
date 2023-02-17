@@ -18,3 +18,10 @@ def render_template(path, context):
     file_content = template_parser.parse_template(file_content, context)
 
     return FileResponse(file_content=file_content)
+
+
+def send_file(file_path, filename):
+    response = FileResponse(file_path=file_path)
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+
+    return response
