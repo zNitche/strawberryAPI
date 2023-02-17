@@ -18,7 +18,9 @@ class Response:
         status_message = self.get_header_message_by_status_code()
         status_code = self.status_code if status_message is not None else 500
 
-        header_rows = [f"HTTP/1.1 {status_code} {status_message}"]
+        header_rows = [f"HTTP/1.1 {status_code} {status_message}",
+                       f"CONTENT-TYPE: {self.content_type}",
+                       f"CONTENT-LENGTH: {len(self.payload) if self.payload else 0}"]
 
         for header, value in self.headers.items():
             header_rows.append(f"{header}: {value}")
