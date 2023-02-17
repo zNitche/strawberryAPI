@@ -125,10 +125,21 @@ class Server:
             request = await self.__load_request(client_r)
             self.print_debug(f"connection from: {client_address}")
 
-            response_string = await self.app.requests_handler(client_address, request)
+            response = await self.app.requests_handler(client_address, request)
 
-            if response_string:
-                client_w.write(response_string)
+            self.print_debug(f"response header from: {client_address}: {response.get_header()}")
+            self.print_debug(f"response is_payload_streamed: {response.is_payload_streamed}")
+
+            if response.is_payload_streamed:
+                client_w.write(f"{response.get_header()}\r\n\r\n")
+                await client_w.drain()
+
+                for chunk in response.payload_streamer():
+                    client_w.write(chunk)
+                    await client_w.drain()
+            else:
+                client_w.write(response.get_response_string())
+                await client_w.drain()
 
         except Exception as e:
             self.print_debug(f"error occurred: {str(e)}")

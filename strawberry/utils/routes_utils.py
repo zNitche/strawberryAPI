@@ -20,8 +20,8 @@ def render_template(path, context):
     return FileResponse(file_content=file_content)
 
 
-def send_file(file_path, filename):
-    response = FileResponse(file_path=file_path)
+def send_file(file_path, filename, is_file_streamed):
+    response = FileResponse(file_path=file_path, is_payload_streamed=is_file_streamed)
     response.headers["Content-Disposition"] = f"attachment; filename={filename}"
 
     return response

@@ -22,3 +22,7 @@ def get_file_content(file_path):
             file_content = file.read()
 
     return file_content
+
+
+def get_file_size(file_path):
+    return os.stat(file_path)[6] if check_if_file_exists(file_path) else 0

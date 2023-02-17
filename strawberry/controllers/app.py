@@ -35,7 +35,7 @@ class App:
                     self.print_debug("requested route")
                     response = self.__process_route(request)
 
-                self.print_debug(f"response string for {client_addr}: '{response.get_response_string()}'")
+                self.print_debug(f"response header for {client_addr}: '{response.get_header()}'")
 
         except Exception as e:
             self.print_debug(f"error occurred: {str(e)}")
@@ -44,7 +44,7 @@ class App:
                 sys.print_exception(e)
 
         finally:
-            return response.get_response_string()
+            return response
 
     def __get_route_for_url(self, url):
         target_route = None

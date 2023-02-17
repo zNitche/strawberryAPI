@@ -4,10 +4,16 @@ from strawberry.consts import HTTPConsts
 
 class Response:
     def __init__(self, status_code=200, content_type=HTTPConsts.CONTENT_TYPE_JSON, payload=None):
+
         self.headers = {}
         self.status_code = status_code
         self.content_type = content_type
         self.payload = payload
+
+        self.is_payload_streamed = False
+
+    def get_content_length(self):
+        return len(self.payload) if self.payload else 0
 
     def get_header_message_by_status_code(self):
         status_message = ResponseConsts.RESPONSES_STATUSES_MESSAGES.get(self.status_code)
@@ -20,7 +26,7 @@ class Response:
 
         header_rows = [f"HTTP/1.1 {status_code} {status_message}",
                        f"CONTENT-TYPE: {self.content_type}",
-                       f"CONTENT-LENGTH: {len(self.payload) if self.payload else 0}"]
+                       f"CONTENT-LENGTH: {self.get_content_length()}"]
 
         for header, value in self.headers.items():
             header_rows.append(f"{header}: {value}")
@@ -36,3 +42,6 @@ class Response:
         response_string = f"{self.get_header()}\r\n\r\n{self.get_body()}"
 
         return response_string
+
+    def payload_streamer(self):
+        pass

@@ -4,14 +4,29 @@ from strawberry.utils import files_utils
 
 
 class FileResponse(Response):
-    def __init__(self, file_path="", file_content=None, content_type=None, status_code=200):
+    def __init__(self, file_path="", file_content=None, content_type=None, status_code=200,
+                 is_payload_streamed=False):
+
         self.file_path = file_path
 
         super().__init__()
 
-        self.payload = self.process_file() if file_content is None else file_content
+        self.is_payload_streamed = is_payload_streamed
+
+        self.payload = self.get_payload(file_content)
         self.content_type = self.get_content_type_by_extension() if content_type is None else content_type
         self.status_code = status_code
+
+    def get_content_length(self):
+        return len(self.payload) if not self.is_payload_streamed else files_utils.get_file_size(self.file_path)
+
+    def get_payload(self, initial_file_content):
+        payload = initial_file_content
+
+        if payload is None and not self.is_payload_streamed:
+            payload = self.process_file()
+
+        return payload
 
     def get_content_type_by_extension(self):
         file_extension = f".{self.file_path.split('.')[-1]}"
@@ -30,3 +45,12 @@ class FileResponse(Response):
 
     def get_body(self):
         return self.payload
+
+    def payload_streamer(self):
+        with open(self.file_path, "rb") as file:
+            while True:
+                chunk = file.read(1024)
+                if not chunk:
+                    break
+
+                yield chunk
