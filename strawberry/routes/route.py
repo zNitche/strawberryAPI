@@ -79,16 +79,11 @@ class Route(RouteBase):
         parameters = {}
 
         if self.accepts_path_parameters():
-            url_data = self.get_url_data()
             splitted_url = self.split_url(url)
 
-            for data_part in url_data:
+            for data_part in self.get_url_data():
                 if data_part["is_parameter"]:
-                    url_position = data_part["url_position"]
-                    parameter_name = data_part["parameter_name"]
-
-                    if parameter_name and url_position < len(splitted_url):
-                        parameters[parameter_name] = splitted_url[url_position]
+                    parameters[data_part["parameter_name"]] = splitted_url[data_part["url_position"]]
 
         return parameters
 

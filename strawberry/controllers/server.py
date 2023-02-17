@@ -40,10 +40,6 @@ class Server:
     def set_app(self, app):
         self.app = app
 
-    def print_debug(self, message):
-        if self.debug_mode:
-            print(f"[SERVER][FREE_MEM: {int(gc.mem_free() / 1024)}kB] - {message}")
-
     def __setup_wlan_as_client(self):
         self.print_debug(f"setting up server as client...")
 
@@ -160,3 +156,7 @@ class Server:
     def stop(self):
         self.mainloop.stop()
         self.mainloop.close()
+
+    def print_debug(self, message):
+        if self.debug_mode:
+            print(f"[SERVER][FREE_MEM: {int(gc.mem_free() / 1024)}kB] - {message}")
