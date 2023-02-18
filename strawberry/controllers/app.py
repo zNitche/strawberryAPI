@@ -1,6 +1,7 @@
 from strawberry.communication.response import Response
 from strawberry.communication.file_response import FileResponse
 from strawberry.routes.default.errors import errors
+from strawberry.utils import files_utils
 import sys
 import gc
 
@@ -85,7 +86,13 @@ class App:
     def __get_static_file(self, target):
         self.print_debug(f"static file target: {target}")
 
-        return FileResponse(f"{self.static_files_path}/{target}")
+        response = self.raise_error(404)
+        file_path = f"{self.static_files_path}/{target}"
+
+        if files_utils.check_if_file_exists(file_path):
+            response = FileResponse(file_path, is_payload_streamed=True)
+
+        return response
 
     def __process_route(self, request):
         route, path_parameters = self.__get_route_for_url(request.target)
