@@ -44,7 +44,7 @@ class FileResponse(Response):
         return file_content
 
     def get_body(self):
-        return self.payload
+        return super().get_body() if not self.is_payload_streamed else self.payload_streamer()
 
     def payload_streamer(self):
         with open(self.file_path, "rb") as file:

@@ -42,6 +42,3 @@ class Response:
         response_string = f"{self.get_header()}\r\n\r\n{self.get_body()}"
 
         return response_string
-
-    def payload_streamer(self):
-        pass

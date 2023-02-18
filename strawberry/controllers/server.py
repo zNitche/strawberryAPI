@@ -134,7 +134,7 @@ class Server:
                 client_w.write(f"{response.get_header()}\r\n\r\n")
                 await client_w.drain()
 
-                for chunk in response.payload_streamer():
+                for chunk in response.get_body():
                     client_w.write(chunk)
                     await client_w.drain()
             else:
