@@ -6,8 +6,8 @@ from strawberry.utils import machine_utils
 def create_app():
     app = App(debug_mode=True)
 
-    from routes.api import api
-    app.register_blueprint(api)
+    from routes.home.routes import home
+    app.register_blueprint(home)
 
     return app
 

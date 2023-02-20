@@ -1,4 +1,37 @@
-body {
-    background-color: #000;
+html, body {
+    padding: 0;
+    margin: 0;
+    background-color: #1A1A1D;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+}
+
+.header {
+    width: 80%;
+    border-bottom: 1px solid #ffffffa6;
+}
+
+.header a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.content {
+    width: 80%;
+    margin-top: 15px;
+}
+
+.examples-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px 0;
+}
+
+.example-container a {
     color: #fff;
 }
