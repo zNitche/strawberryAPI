@@ -7,7 +7,10 @@ def create_app():
     app = App(debug_mode=True)
 
     from routes.home.routes import home
+    from routes.api.routes import api
+
     app.register_blueprint(home)
+    app.register_blueprint(api)
 
     return app
 
