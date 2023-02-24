@@ -5,7 +5,7 @@ import uasyncio
 import gc
 from strawberry.utils import machine_utils
 from strawberry.communication.request import Request
-from strawberry.consts import HTTPConsts
+from strawberry.consts import HTTPConsts, ServerConsts
 
 
 class Server:
@@ -15,6 +15,7 @@ class Server:
                  wifi_ssid="",
                  wifi_password="",
                  wifi_connections_retries=5,
+                 wifi_connection_retries_till_connected=False,
                  wifi_connection_delay=5,
                  hotspot_name="pico_hotspot",
                  hotspot_password="pico_hotspot1234",
@@ -22,10 +23,14 @@ class Server:
 
         self.host = host
         self.port = port
+
         self.wifi_ssid = wifi_ssid
         self.wifi_password = wifi_password
+
         self.wifi_connections_retries = wifi_connections_retries
+        self.wifi_connection_retries_till_connected = wifi_connection_retries_till_connected
         self.wifi_connection_delay = wifi_connection_delay
+
         self.hotspot_name = hotspot_name
         self.hotspot_password = hotspot_password
         self.hotspot_mode = hotspot_mode
@@ -47,7 +52,6 @@ class Server:
         self.print_debug(f"setting up server as client...")
 
         self.wlan = network.WLAN(network.STA_IF)
-
         self.wlan.active(True)
 
     def __setup_wlan_as_host(self):
@@ -59,28 +63,35 @@ class Server:
         self.wlan.active(True)
 
         self.print_debug(f"WLAN config: {self.wlan.ifconfig()}")
+        machine_utils.init_periodic_timer(self.led_timer,
+                                          ServerConsts.LED_BLINK_WIFI_CONNECTED,
+                                          self.onboard_led.toggle)
 
     def __connect_to_network(self):
         tries = 0
 
         self.wlan.disconnect()
 
-        while (tries < self.wifi_connections_retries) and (not self.wlan.isconnected()):
+        while ((tries < self.wifi_connections_retries) or self.wifi_connection_retries_till_connected)\
+                and (not self.wlan.isconnected()):
+
             self.print_debug(f"connecting to network: {tries}...")
 
             self.wlan.connect(self.wifi_ssid, self.wifi_password)
-            machine_utils.init_periodic_timer(self.led_timer, 250, self.onboard_led.toggle)
+            machine_utils.init_periodic_timer(self.led_timer,
+                                              ServerConsts.LED_BLINK_PERIOD_WIFI_CONNECTING,
+                                              self.onboard_led.toggle)
 
             time.sleep(self.wifi_connection_delay)
             tries += 1
 
         if self.wlan.isconnected():
-            self.led_timer.deinit()
-
             self.print_debug(f"connected to '{self.wifi_ssid}'")
             self.print_debug(f"WLAN config: {self.wlan.ifconfig()}")
 
-            machine_utils.init_periodic_timer(self.led_timer, 3000, self.onboard_led.toggle)
+            machine_utils.init_periodic_timer(self.led_timer,
+                                              ServerConsts.LED_BLINK_WIFI_CONNECTED,
+                                              self.onboard_led.toggle)
 
     def run(self):
         self.__run_as_host() if self.hotspot_mode else self.__run_as_client()
