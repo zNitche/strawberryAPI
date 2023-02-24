@@ -31,11 +31,14 @@ class Server:
         self.hotspot_mode = hotspot_mode
 
         self.wlan = None
-
         self.app = None
+
+        self.onboard_led = machine_utils.get_onboard_led()
 
         self.debug_mode = debug_mode
         self.mainloop = uasyncio.get_event_loop()
+
+        self.led_timer = machine_utils.create_timer()
 
     def set_app(self, app):
         self.app = app
@@ -66,16 +69,18 @@ class Server:
             self.print_debug(f"connecting to network: {tries}...")
 
             self.wlan.connect(self.wifi_ssid, self.wifi_password)
-            machine_utils.blink_onboard_led()
+            machine_utils.init_periodic_timer(self.led_timer, 250, self.onboard_led.toggle)
 
             time.sleep(self.wifi_connection_delay)
             tries += 1
 
         if self.wlan.isconnected():
+            self.led_timer.deinit()
+
             self.print_debug(f"connected to '{self.wifi_ssid}'")
             self.print_debug(f"WLAN config: {self.wlan.ifconfig()}")
 
-            machine_utils.blink_onboard_led(blinks=3)
+            machine_utils.init_periodic_timer(self.led_timer, 3000, self.onboard_led.toggle)
 
     def run(self):
         self.__run_as_host() if self.hotspot_mode else self.__run_as_client()
