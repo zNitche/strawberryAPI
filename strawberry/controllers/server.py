@@ -44,6 +44,7 @@ class Server:
         self.mainloop = uasyncio.get_event_loop()
 
         self.led_timer = machine_utils.create_timer()
+        self.wifi_reconnect_timer = machine_utils.create_timer() if not self.hotspot_mode else None
 
     def set_app(self, app):
         self.app = app
@@ -92,6 +93,12 @@ class Server:
             machine_utils.init_periodic_timer(self.led_timer,
                                               ServerConsts.LED_BLINK_WIFI_CONNECTED,
                                               self.onboard_led.toggle)
+
+    def __reconnect_to_network(self):
+        if not self.wlan.isconnected() and not self.hotspot_mode:
+            self.print_debug(f"reconnecting to '{self.wifi_ssid}'")
+
+            self.__connect_to_network()
 
     def run(self):
         self.__run_as_host() if self.hotspot_mode else self.__run_as_client()
@@ -176,6 +183,11 @@ class Server:
 
         if self.wlan is not None:
             self.mainloop.create_task(uasyncio.start_server(self.__requests_handler, self.host, self.port))
+
+            if self.wifi_reconnect_timer:
+                machine_utils.init_periodic_timer(self.wifi_reconnect_timer,
+                                                  ServerConsts.WIFI_RECONNECT_PERIOD,
+                                                  self.__reconnect_to_network)
 
             self.print_debug("mainloop running...")
             self.mainloop.run_forever()
