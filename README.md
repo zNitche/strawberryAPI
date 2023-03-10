@@ -17,6 +17,7 @@ a lightweight `MicroPython` web framework & server for `RaspberryPi Pico W`
 - routing errors handling
 - generator based file responses
 - files hosting
+- cookies support
 - debug logging
 
 ### How to use:

@@ -13,7 +13,8 @@ def home_page(request):
         "basic_page_url": app.url_for("home.basic_page"),
         "form_page_url": app.url_for("home.form_page"),
         "url_parth_params_url": app.url_for("home.page_url_params", path_parameters={"arg_1": "test_path_param"}),
-        "download_file_url": app.url_for("home.get_file")
+        "download_file_url": app.url_for("home.get_file"),
+        "cookies_page_url": app.url_for("home.cookies_page"),
     }
 
     return routes_utils.render_template(home.get_template_path("index.html"), context)
@@ -30,7 +31,11 @@ def basic_page(request):
 
 @home.route("/form_page", methods=["GET"])
 def form_page(request):
-    return routes_utils.render_template(home.get_template_path("form_page.html"), {})
+    context = {
+        "form_post_url": home.current_app.url_for("home.form_post"),
+    }
+
+    return routes_utils.render_template(home.get_template_path("form_page.html"), context)
 
 
 @home.route("/form_post", methods=["POST"])
@@ -38,6 +43,11 @@ def form_post(request):
     url = home.current_app.url_for("home.page_url_params", path_parameters={"arg_1": request.body.get("name")})
 
     return routes_utils.redirect(url)
+
+
+@home.route("/cookies_page", methods=["GET"])
+def cookies_page(request):
+    return routes_utils.render_template(home.get_template_path("set_cookie.html"), {})
 
 
 @home.route("/page_url_params/<arg_1>", methods=["GET"])

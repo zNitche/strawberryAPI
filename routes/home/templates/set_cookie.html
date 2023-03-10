@@ -1,0 +1,24 @@
+#EXTEND /static/base.html
+#SECTION example_title
+Cookies workflow Page Example
+#END example_title
+#SECTION example_content
+<div class="example-container">
+    <p>
+        <label for="name">cookie name:</label>
+        <br>
+        <input type="text" id="name" name="name" placeholder="cookie name">
+    </p>
+    <p>
+        <label for="value">cookie value:</label>
+        <br>
+        <input type="text" id="value" name="value" placeholder="cookie value">
+    </p>
+    <p>
+        <input type="button" value="Set" onclick="setCookie('name', 'value');">
+    </p>
+    <p>
+        <input type="button" value="Show Cookies" onclick="showCookies();">
+    </p>
+</div>
+#END example_content
