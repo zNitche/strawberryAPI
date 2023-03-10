@@ -11,6 +11,8 @@ class Request:
         self.header = {}
         self.body = ""
 
+        self.cookies = {}
+
         self.path_parameters = {}
 
         self.payload_parser = RequestPayloadParser()
@@ -23,6 +25,20 @@ class Request:
             splitted_request_string.pop(0)
 
             self.header = self.parse_request_string(splitted_request_string)
+            self.parse_cookies()
+
+    def parse_cookies(self):
+        if "COOKIE" in self.header.keys():
+            splitted_cookies_data = self.header["COOKIE"].split("; ")
+
+            for data_row in splitted_cookies_data:
+                splitted_data = data_row.split("=")
+
+                name = splitted_data[0]
+                value = splitted_data[1]
+
+                self.cookies[name] = value
+
 
     def parse_body(self, body_string):
         body = body_string.replace("\r", "").replace("\n", "")

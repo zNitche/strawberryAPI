@@ -8,7 +8,9 @@ class Response:
         self.headers = {}
         self.status_code = status_code
         self.content_type = content_type
+
         self.payload = payload
+        self.cookies = {}
 
         self.is_payload_streamed = False
 
@@ -30,6 +32,9 @@ class Response:
 
         for header, value in self.headers.items():
             header_rows.append(f"{header}: {value}")
+
+        for cookie_name, cookie_data in self.cookies.items():
+            header_rows.append(f"Set-Cookie: {cookie_name}={cookie_data}")
 
         header_string = "\r\n".join(header_rows)
 
