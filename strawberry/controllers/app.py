@@ -39,10 +39,7 @@ class App:
                 self.print_debug(f"response header for {client_addr}: '{response.get_header()}'")
 
         except Exception as e:
-            self.print_debug(f"error occurred: {str(e)}")
-
-            if self.debug_mode:
-                sys.print_exception(e)
+            self.print_debug(f"error occurred: {str(e)}", exception=e)
 
         finally:
             return response
@@ -129,6 +126,9 @@ class App:
 
         return endpoint_url
 
-    def print_debug(self, message):
+    def print_debug(self, message, exception=None):
         if self.debug_mode:
             print(f"[APP][FREE_MEM: {int(gc.mem_free() / 1024)}kB] - {message}")
+
+            if exception and isinstance(exception, Exception):
+                sys.print_exception(exception)
