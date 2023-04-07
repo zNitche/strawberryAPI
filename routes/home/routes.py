@@ -15,6 +15,7 @@ def home_page(request):
         "url_parth_params_url": app.url_for("home.page_url_params", path_parameters={"arg_1": "test_path_param"}),
         "download_file_url": app.url_for("home.get_file"),
         "cookies_page_url": app.url_for("home.cookies_page"),
+        "url_query_params": app.url_for("home.url_query_params"),
     }
 
     return routes_utils.render_template(home.get_template_path("index.html"), context)
@@ -50,13 +51,22 @@ def cookies_page(request):
     return routes_utils.render_template(home.get_template_path("set_cookie.html"), {})
 
 
-@home.route("/page_url_params/<arg_1>", methods=["GET"])
+@home.route("/page_url_params/<arg_1>/next_url_part", methods=["GET"])
 def page_url_params(request):
     context = {
         "param": request.path_parameters.get("arg_1")
     }
 
     return routes_utils.render_template(home.get_template_path("url_params_page.html"), context)
+
+
+@home.route("/url_query_params", methods=["GET"])
+def url_query_params(request):
+    context = {
+        "params": str(request.query_params)
+    }
+
+    return routes_utils.render_template(home.get_template_path("query_params.html"), context)
 
 
 @home.route("/get_file", methods=["GET"])

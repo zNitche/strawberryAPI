@@ -11,6 +11,7 @@ a lightweight `MicroPython` web framework & server for `RaspberryPi Pico W`
 - blueprints based routing (like `flask`)
 - `GET` & `POST` request methods
 - url parameters `/page_url_params/<arg_1>`
+- query parameters `?arg=val`
 - simple templating engine supporting:
   - templates inheritance
   - variables injection
