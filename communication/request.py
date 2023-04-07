@@ -14,6 +14,7 @@ class Request:
         self.cookies = {}
 
         self.path_parameters = {}
+        self.query_params = {}
 
         self.payload_parser = RequestPayloadParser()
 
@@ -24,8 +25,22 @@ class Request:
             self.method, self.target, self.protocol = splitted_request_string[0].split()
             splitted_request_string.pop(0)
 
+            self.parse_query_params()
+
             self.header = self.parse_request_string(splitted_request_string)
             self.parse_cookies()
+
+    def parse_query_params(self):
+        splitted_url = self.target.split("?")
+
+        if len(splitted_url) == 2:
+            self.target = splitted_url[0]
+
+            for param_string in splitted_url[1].split("&"):
+                splitted_string = param_string.split("=")
+
+                if len(splitted_string) == 2:
+                    self.query_params[splitted_string[0]] = splitted_string[1]
 
     def parse_cookies(self):
         if "COOKIE" in self.header.keys():
@@ -38,7 +53,6 @@ class Request:
                 value = splitted_data[1]
 
                 self.cookies[name] = value
-
 
     def parse_body(self, body_string):
         body = body_string.replace("\r", "").replace("\n", "")

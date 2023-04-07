@@ -165,18 +165,14 @@ class Server:
                 await client_w.drain()
 
         except Exception as e:
-            self.print_debug(f"error occurred: {str(e)}")
-
-            if self.debug_mode:
-                sys.print_exception(e)
+            self.print_debug(f"error occurred: {str(e)}", exception=e)
 
         finally:
             client_w.close()
 
             await client_w.wait_closed()
 
-            if self.debug_mode:
-                print(f"request took: {time.ticks_ms() - start_time}ms")
+            self.print_debug(f"request took: {time.ticks_ms() - start_time}ms")
 
     def run_mainloop(self):
         self.print_debug("starting mainloop...")
@@ -196,6 +192,9 @@ class Server:
         self.mainloop.stop()
         self.mainloop.close()
 
-    def print_debug(self, message):
+    def print_debug(self, message, exception=None):
         if self.debug_mode:
             print(f"[SERVER][FREE_MEM: {int(gc.mem_free() / 1024)}kB] - {message}")
+
+            if exception and isinstance(exception, Exception):
+                sys.print_exception(exception)
