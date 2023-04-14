@@ -44,12 +44,13 @@ class App:
         finally:
             return response
 
-    def __get_route_for_url(self, url):
+    def __get_route_for_url(self, url, has_query_params):
         target_route = None
+        c_url = url if not has_query_params else url.split("?")[0]
 
         for blueprint in self.blueprints:
             for route in blueprint.routes:
-                if route.match_url(url):
+                if route.match_url(c_url):
                     target_route = route
                     break
 
@@ -92,7 +93,9 @@ class App:
         return response
 
     def __process_route(self, request):
-        route, path_parameters = self.__get_route_for_url(request.target)
+        has_query_params = True if len(request.query_params) > 0 else False
+
+        route, path_parameters = self.__get_route_for_url(request.target, has_query_params=has_query_params)
         response = self.raise_error(404)
 
         if route:
