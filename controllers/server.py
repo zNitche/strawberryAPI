@@ -19,7 +19,8 @@ class Server:
                  wifi_connection_delay=5,
                  hotspot_name="pico_hotspot",
                  hotspot_password="pico_hotspot1234",
-                 hotspot_mode=False):
+                 hotspot_mode=False,
+                 reconnect_to_network=True):
 
         self.host = host
         self.port = port
@@ -41,10 +42,13 @@ class Server:
         self.onboard_led = machine_utils.get_onboard_led()
 
         self.debug_mode = debug_mode
+        self.reconnect_to_network = reconnect_to_network
+
         self.mainloop = uasyncio.get_event_loop()
 
         self.led_timer = machine_utils.create_timer()
-        self.wifi_reconnect_timer = machine_utils.create_timer() if not self.hotspot_mode else None
+
+        self.wifi_reconnect_timer = machine_utils.create_timer() if not self.hotspot_mode and self.reconnect_to_network else None
 
     def set_app(self, app):
         self.app = app
@@ -73,15 +77,16 @@ class Server:
 
         self.wlan.disconnect()
 
+        machine_utils.init_periodic_timer(self.led_timer,
+                                          ServerConsts.LED_BLINK_PERIOD_WIFI_CONNECTING,
+                                          self.onboard_led.toggle)
+
         while ((tries < self.wifi_connections_retries) or self.wifi_connection_retries_till_connected)\
                 and (not self.wlan.isconnected()):
 
-            self.print_debug(f"connecting to network: {tries}...")
+            self.print_debug(f"connecting to network '{self.wifi_ssid}': {tries + 1}...")
 
             self.wlan.connect(self.wifi_ssid, self.wifi_password)
-            machine_utils.init_periodic_timer(self.led_timer,
-                                              ServerConsts.LED_BLINK_PERIOD_WIFI_CONNECTING,
-                                              self.onboard_led.toggle)
 
             time.sleep(self.wifi_connection_delay)
             tries += 1
@@ -181,6 +186,8 @@ class Server:
             self.mainloop.create_task(uasyncio.start_server(self.__requests_handler, self.host, self.port))
 
             if self.wifi_reconnect_timer:
+                self.print_debug("wifi auto reconnect enabled...")
+
                 machine_utils.init_periodic_timer(self.wifi_reconnect_timer,
                                                   ServerConsts.WIFI_RECONNECT_PERIOD,
                                                   self.__reconnect_to_network)
