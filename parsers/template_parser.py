@@ -22,7 +22,10 @@ class TemplateParser:
     def parse_variables(self, template, context):
         for context_var in context:
             var_string = f"{FormatConsts.TEMPLATE_VAR_START}{context_var}{FormatConsts.TEMPLATE_VAR_END}"
-            template = template.replace(var_string, context[context_var])
+            context_var = context.get(context_var)
+
+            if context_var is not None:
+                template = template.replace(var_string, str(context_var))
 
         return template
 
