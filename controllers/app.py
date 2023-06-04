@@ -7,11 +7,10 @@ import gc
 
 
 class App:
-    def __init__(self, static_files_path="/static",
-                 debug_mode=False):
+    def __init__(self, static_files_dirs=None, debug_mode=False):
 
         self.debug_mode = debug_mode
-        self.static_files_path = static_files_path
+        self.static_files_dirs = static_files_dirs if not None else ["/static"]
 
         self.blueprints = []
         self.errors_routes = errors.routes
@@ -85,10 +84,13 @@ class App:
         self.print_debug(f"static file target: {target}")
 
         response = self.raise_error(404)
-        file_path = f"{self.static_files_path}/{target}"
 
-        if files_utils.check_if_file_exists(file_path):
-            response = FileResponse(file_path, is_payload_streamed=True)
+        for static_dir in self.static_files_dirs:
+            file_path = f"{static_dir}/{target}"
+
+            if files_utils.check_if_file_exists(file_path):
+                response = FileResponse(file_path, is_payload_streamed=True)
+                break
 
         return response
 
